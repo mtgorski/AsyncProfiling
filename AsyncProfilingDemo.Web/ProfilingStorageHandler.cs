@@ -56,7 +56,7 @@ namespace AsyncProfilingDemo.Web
                     methodInvocations[methodName] = 1;
                 }
                 
-                var methodId = timing.Name + "_" + invocations;
+                var methodId = methodName + "_" + invocations;
                 
                 actionTiming.TimingDetails.Add(new TimingDetail { MethodId = methodId, Milliseconds = timing.DurationMilliseconds.GetValueOrDefault() });
             }

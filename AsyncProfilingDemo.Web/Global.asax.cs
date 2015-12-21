@@ -29,7 +29,6 @@ namespace AsyncProfilingDemo.Web
             if (ProfilingEnabled)
             {
                 MiniProfiler.Start();
-                MiniProfiler.Current.Storage = new HttpRuntimeCacheStorage(TimeSpan.FromHours(1));
             } 
         }
 
