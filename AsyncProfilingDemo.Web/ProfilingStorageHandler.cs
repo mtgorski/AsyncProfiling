@@ -34,33 +34,41 @@ namespace AsyncProfilingDemo.Web
             var actionName = action.ActionName;
             var totalTime = MiniProfiler.Current.DurationMilliseconds;
             
-            var actionTiming = new OverallTiming
+            var requestTiming = new OverallTiming
             {
                 ActionName = actionName,
                 TotalMilliseonds = totalTime,
                 TimingDetails = new List<TimingDetail>()
             };
 
-            var methodInvocations = new Dictionary<string, int>();
+            var stepInvocations = new Dictionary<string, int>();
             foreach(var timing in MiniProfiler.Current.GetTimingHierarchy())
             {
                 if(timing.IsRoot)
                 {
                     continue;
                 }
-                
-                var methodName = timing.Name;
+
+                var stepName = timing.Name;
+
                 int invocations;
-                if (!methodInvocations.TryGetValue(methodName, out invocations))
-                {
-                    methodInvocations[methodName] = 1;
-                }
+                stepInvocations.TryGetValue(stepName, out invocations);
+                invocations++;
                 
-                var methodId = methodName + "_" + invocations;
-                
-                actionTiming.TimingDetails.Add(new TimingDetail { MethodId = methodId, Milliseconds = timing.DurationMilliseconds.GetValueOrDefault() });
+                stepInvocations[stepName] = invocations;
+
+                stepName = stepName + "_" + invocations;
+               
+                requestTiming.TimingDetails.Add(new TimingDetail { StepName = stepName, Milliseconds = timing.DurationMilliseconds.GetValueOrDefault() });
             }
-            TimingLog.RollingTimingLog.Enqueue(actionTiming);
+
+            var actionTiming = requestTiming.TimingDetails.SingleOrDefault(t => t.StepName == request.GetActionDescriptor().ControllerDescriptor.ControllerName + "_" + actionName + "_" + 1);
+            if (actionTiming != null)
+            {
+                var pipelineTime = new TimingDetail { StepName = "Non-action time", Milliseconds = requestTiming.TotalMilliseonds - actionTiming.Milliseconds };
+                requestTiming.TimingDetails.Add(pipelineTime);
+            }
+            TimingLog.RollingTimingLog.Enqueue(requestTiming);
             lock(_lock)
             {
                 if(TimingLog.RollingTimingLog.Count > TimingLog.MaxLogs)
@@ -84,7 +92,7 @@ namespace AsyncProfilingDemo.Web
 
     public class TimingDetail
     {
-        public string MethodId {get; set;}
+        public string StepName {get; set;}
         public decimal Milliseconds {get; set;}
     }
 }

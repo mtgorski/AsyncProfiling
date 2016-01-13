@@ -31,19 +31,21 @@ namespace AsyncProfilingDemo.Web.Controllers
 
 
         [HttpGet]
+        [ProfileAction]
         public async Task<IHttpActionResult> GoAsync()
         {
             var timer = new Stopwatch();
             timer.Start();
 
-            var io1 = await _ioService.OperationOneAsync();
-            var io2 = await _ioService.OperationTwoAsync();
-            var cpu = _cpuService.Compute();
+            var io1 = await _ioService.OperationOneAsync(); //300 ms
+            var io2 = await _ioService.OperationTwoAsync(); //3000 ms
+            var cpu = _cpuService.Compute(); //125 ms
 
             timer.Stop();
 
             var result = io1 + io2 + cpu;
             var message = string.Format("Action took {0} ms and found result {1}", timer.ElapsedMilliseconds, result);
+
             return Ok(message);
         }
 
@@ -81,6 +83,14 @@ namespace AsyncProfilingDemo.Web.Controllers
         }
 
         [HttpGet]
+        [ProfileAction]
+        public async Task<IHttpActionResult> ThrowExceptionAsync()
+        {
+            await _ioService.ThrowExceptionAsync();
+            return Ok();
+        }
+
+        [HttpGet]
         public IHttpActionResult DemoInterceptor()
         {
             var result = _intercepted.GetResult();
@@ -99,18 +109,20 @@ namespace AsyncProfilingDemo.Web.Controllers
         {
             var logs = TimingLog.RollingTimingLog.ToArray().Where(x => x.ActionName == actionName);
             var total = logs.Sum(x => x.TotalMilliseonds);
+            
             var response = new JObject();
+
             foreach(var log in logs)
             {
                 foreach(var method in log.TimingDetails)
                 {
-                    if(response.Property(method.MethodId) == null)
+                    if(response.Property(method.StepName) == null)
                     {
-                        response.Add(method.MethodId, method.Milliseconds / total);
+                        response.Add(method.StepName, method.Milliseconds / total);
                     }
                     else
                     {
-                        response[method.MethodId] = (decimal)response[method.MethodId] + method.Milliseconds / total;
+                        response[method.StepName] = (decimal)response[method.StepName] + method.Milliseconds / total;
                     }
                 }
             }

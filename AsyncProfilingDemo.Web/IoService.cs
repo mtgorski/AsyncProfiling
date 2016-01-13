@@ -20,12 +20,19 @@ namespace AsyncProfilingDemo.Web
             await Task.Delay(3000);
             return 10;
         }
+
+        public async Task ThrowExceptionAsync()
+        {
+            await Task.Delay(100);
+            throw new HttpException("It's as if I tried calling another service and it didn't work!");
+        }
     }
 
     public interface IIoService
     {
         Task<int> OperationOneAsync();
         Task<int> OperationTwoAsync();
+        Task ThrowExceptionAsync();
     }
 
 }
