@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncProfilingDemo.Web", "AsyncProfilingDemo.Web\AsyncProfilingDemo.Web.csproj", "{B8C24D3C-C53A-44C4-918D-ACD5F5927CF3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncProfilingDemo.MVC", "AsyncProfilingDemo.MVC\AsyncProfilingDemo.MVC.csproj", "{B81A1C70-7370-4030-A641-AB1835B40D96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B8C24D3C-C53A-44C4-918D-ACD5F5927CF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8C24D3C-C53A-44C4-918D-ACD5F5927CF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8C24D3C-C53A-44C4-918D-ACD5F5927CF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B81A1C70-7370-4030-A641-AB1835B40D96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B81A1C70-7370-4030-A641-AB1835B40D96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B81A1C70-7370-4030-A641-AB1835B40D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B81A1C70-7370-4030-A641-AB1835B40D96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
