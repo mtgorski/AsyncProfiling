@@ -13,23 +13,17 @@ namespace AsyncProfilingDemo.Web
 {
     public class WebApiApplication : System.Web.HttpApplication
     {
-        private static readonly bool ProfilingEnabled = bool.Parse(ConfigurationManager.AppSettings["UseMiniProfilerInterceptor"]);
 
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
-            if(ProfilingEnabled)
-            {
-                GlobalConfiguration.Configuration.MessageHandlers.Add(new ProfilingStorageHandler());
-            }
+            MiniProfiler.Settings.Results_List_Authorize = request => true;
+            MiniProfiler.Settings.Results_Authorize = request => true;
         }
 
         protected void Application_BeginRequest()
         {
-            if (ProfilingEnabled)
-            {
-                MiniProfiler.Start();
-            } 
+            MiniProfiler.Start();
         }
 
         protected void Application_EndRequest()

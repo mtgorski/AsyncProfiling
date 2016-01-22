@@ -97,42 +97,5 @@ namespace AsyncProfilingDemo.Web.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        public IHttpActionResult TimingLogs()
-        {
-            var logs = TimingLog.RollingTimingLog.ToList();
-            return Ok(logs);
-        }
-
-        [HttpGet]
-        public IHttpActionResult Profile(string actionName)
-        {
-            var logs = TimingLog.RollingTimingLog.ToArray().Where(x => x.ActionName == actionName);
-            var total = logs.Sum(x => x.TotalMilliseonds);
-            
-            var response = new JObject();
-
-            foreach(var log in logs)
-            {
-                foreach(var method in log.TimingDetails)
-                {
-                    if(response.Property(method.StepName) == null)
-                    {
-                        response.Add(method.StepName, method.Milliseconds / total);
-                    }
-                    else
-                    {
-                        response[method.StepName] = (decimal)response[method.StepName] + method.Milliseconds / total;
-                    }
-                }
-            }
-
-            foreach(var property in response)
-            {
-                response[property.Key] = Math.Round((decimal)property.Value * 100) + " %";
-            }
-
-            return Ok(response);
-        }
     }
 }
