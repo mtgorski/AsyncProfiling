@@ -16,7 +16,9 @@ namespace AsyncProfilingDemo.Web
 
         public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
         {
-            (actionExecutedContext.ActionContext.ActionArguments["profiling_step"] as IDisposable).Dispose();
+            var step = actionExecutedContext.ActionContext.ActionArguments["profiling_step"] as IDisposable;
+            if (step != null)
+                step.Dispose();
         }
     }
 }
