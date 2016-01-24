@@ -34,27 +34,16 @@ namespace AsyncProfilingDemo.Web.Controllers
         [ProfileAction]
         public async Task<IHttpActionResult> GoAsync()
         {
-            var timer = new Stopwatch();
-            timer.Start();
-
             var io1 = await _ioService.OperationOneAsync(); //300 ms
             var io2 = await _ioService.OperationTwoAsync(); //3000 ms
             var cpu = _cpuService.Compute(); //125 ms
 
-            timer.Stop();
-
-            var result = io1 + io2 + cpu;
-            var message = string.Format("Action took {0} ms and found result {1}", timer.ElapsedMilliseconds, result);
-
-            return Ok(message);
+            return Ok(io1 +  io2 + cpu);
         }
 
         [HttpGet]
         public async Task<IHttpActionResult> ProfiledGoAsync()
         {
-            var timer = new Stopwatch();
-            timer.Start();
-
             MiniProfiler.Start();
 
             int io1, io2, cpu;
@@ -72,14 +61,9 @@ namespace AsyncProfilingDemo.Web.Controllers
                 cpu = _cpuService.Compute();
             }
 
-            var result = io1 + io2 + cpu;
-            timer.Stop();
-
-            var message = string.Format("Action took {0} ms and found result {1}", timer.ElapsedMilliseconds, result);
-
             MiniProfiler.Stop();
             Debug.WriteLine(MiniProfiler.Current.RenderPlainText());
-            return Ok(message);
+            return Ok(io1 + io2 + cpu);
         }
 
         [HttpGet]

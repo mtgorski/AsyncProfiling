@@ -9,12 +9,6 @@ namespace AsyncProfilingDemo.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
-        {
-            var context = new ApplicationDbContext();
-            var users = context.Users.ToList();
-            return View();
-        }
 
         public ActionResult About()
         {
